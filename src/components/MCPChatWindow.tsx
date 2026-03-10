@@ -28,14 +28,21 @@ const RESPONSE1_BODY_PLAIN = "I have successfully created and verified the order
 const RESPONSE1_BODY_LINK = "AutoSend Dashboard.";
 const RESPONSE1_BODY = RESPONSE1_BODY_PLAIN + RESPONSE1_BODY_LINK;
 const RESPONSE2_TEXT = "Test email sent to david@acme.com! ✅";
-
 const INITIAL_MESSAGES = [
     "What suppression groups do I have?",
     "List all my contact segments and their sizes",
     "Create a newsletter campaign for our March product updates",
 ];
 
-export default function MCPChatWindow() {
+interface MCPChatWindowProps {
+    renderPlayButton?: (props: {
+        onClick: () => void;
+        isCompleted: boolean;
+        handlePlay: () => void;
+    }) => React.ReactNode;
+}
+
+export default function MCPChatWindow({ renderPlayButton }: MCPChatWindowProps) {
     const [state, setState] = useState<AnimationState>("initial");
     const [displayedInput, setDisplayedInput] = useState("");
     const [agentFetchingText, setAgentFetchingText] = useState("");
@@ -551,47 +558,51 @@ export default function MCPChatWindow() {
                         transition: "opacity 0.6s ease, backdrop-filter 0.6s ease, visibility 0.6s",
                     }}
                 >
-                    <button
-                        onClick={handlePlay}
-                        style={{
-                            background: "#fafafa",
-                            border: "2px solid #e5e5e5",
-                            borderRadius: "10px",
-                            padding: "6px 16px 6px 14px",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "4px",
-                            cursor: "pointer",
-                            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                            transition: "all 0.2s ease",
-                            fontFamily: "monospace",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.56px",
-                            fontWeight: 600,
-                            color: "#171717",
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.transform = "translateY(-2px)";
-                            e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,0.12)";
-                            e.currentTarget.style.background = "#ffffff";
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = "translateY(0)";
-                            e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
-                            e.currentTarget.style.background = "#fafafa";
-                        }}
-                    >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                            {isCompleted ? (
-                                <path d="M23 4v6h-6M20.49 15a9 9 0 1 1-2.12-9.36L23 10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                            ) : (
-                                <path d="M5 3v18l15-9L5 3z" />
-                            )}
-                        </svg>
-                        <span style={{ fontSize: "14px" }}>
-                            {isCompleted ? "REPLAY" : "SEE IT IN ACTION"}
-                        </span>
-                    </button>
+                    {renderPlayButton ? (
+                        renderPlayButton({ onClick: handlePlay, isCompleted, handlePlay })
+                    ) : (
+                        <button
+                            onClick={handlePlay}
+                            style={{
+                                background: "#fafafa",
+                                border: "2px solid #e5e5e5",
+                                borderRadius: "10px",
+                                padding: "6px 16px 6px 14px",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "4px",
+                                cursor: "pointer",
+                                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                                transition: "all 0.2s ease",
+                                fontFamily: "monospace",
+                                textTransform: "uppercase",
+                                letterSpacing: "0.56px",
+                                fontWeight: 600,
+                                color: "#171717",
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.transform = "translateY(-2px)";
+                                e.currentTarget.style.boxShadow = "0 6px 16px rgba(0,0,0,0.12)";
+                                e.currentTarget.style.background = "#ffffff";
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.transform = "translateY(0)";
+                                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
+                                e.currentTarget.style.background = "#fafafa";
+                            }}
+                        >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                {isCompleted ? (
+                                    <path d="M23 4v6h-6M20.49 15a9 9 0 1 1-2.12-9.36L23 10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                                ) : (
+                                    <path d="M5 3v18l15-9L5 3z" />
+                                )}
+                            </svg>
+                            <span style={{ fontSize: "14px" }}>
+                                {isCompleted ? "REPLAY" : "SEE IT IN ACTION"}
+                            </span>
+                        </button>
+                    )}
                 </div>
             </div>
         </LayoutGroup>
